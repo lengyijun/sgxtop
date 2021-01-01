@@ -41,6 +41,7 @@ struct enclave {
 	unsigned long size;
 	unsigned long eadd_cnt;
 	unsigned long resident;
+  unsigned long va_pages_cnt;
 };
 
 struct enclave_entry {
@@ -225,11 +226,13 @@ char *pid_read_command(pid_t pid)
 
 int enclave_read(FILE *fp, struct enclave *enclave)
 {
-	int r = fscanf(fp, "%d %u %lu %lu %lu",
+	int r = fscanf(fp, "%d %u %lu %lu %lu %lu",
 		       &enclave->pid, &enclave->id,
 		       &enclave->size, &enclave->eadd_cnt,
-		       &enclave->resident);
-	if (r != 5)
+		       &enclave->resident,
+		       &enclave->va_pages_cnt
+           );
+	if (r != 6)
 		return -1;
 
 	return 0;
@@ -411,11 +414,11 @@ void enclaves_report(struct enclaves *enclaves)
 	static unsigned last_lines;
 
 	if (sgxtop)
-		mvprintw(line++, 0, "%*s %10s %11s %11s %11s %10s", pid_width,
-			 "PID", "ID", "Size", "EADDs", "Resident", "Command");
+		mvprintw(line++, 0, "%*s %10s %11s %11s %11s %11s %10s", pid_width,
+			 "PID", "ID", "Size", "EADDs", "Resident", "VA_Page", "Command");
 	else
-		printf("%*s %10s %11s %11s %11s %10s\n", pid_width,
-		       "PID", "ID", "Size", "EADDs", "Resident", "Command");
+		printf("%*s %10s %11s %11s %11s %11s %10s\n", pid_width,
+		       "PID", "ID", "Size", "EADDs", "Resident", "VA_Page","Command");
 	LIST_FOREACH(e, &enclaves->state_list[enclaves->state],
 		     state_entry[enclaves->state]) {
 		assert(count < enclaves->count);
@@ -432,17 +435,19 @@ void enclaves_report(struct enclaves *enclaves)
 		assert(line <= enclaves->count + 4 /* initial count */);
 		e = list[count];
 		if (sgxtop)
-			mvprintw(line, 0, "%*d %10u %10luK %10luK %10luK %s",
+			mvprintw(line, 0, "%*d %10u %10luK %10luK %10luK %11u %s",
 				 pid_width, e->enclave.pid, e->enclave.id,
 				 e->enclave.size / 1024,
 				 e->enclave.eadd_cnt * 4,
 				 e->enclave.resident * 4,
+         e->enclave.va_pages_cnt,
 				 e->command ? e->command : "");
 		else
-			printf("%*d %10u %10luK %10luK %10luK %s",
+			printf("%*d %10u %10luK %10luK %10luK %11lu %s",
 			       pid_width, e->enclave.pid, e->enclave.id,
 			       e->enclave.size / 1024, e->enclave.eadd_cnt * 4,
 			       e->enclave.resident * 4,
+             e->enclave.va_pages_cnt,
 			       e->command ? e->command : "");
 		if (sgxtop && line >= LINES)
 			break;
