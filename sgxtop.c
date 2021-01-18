@@ -415,10 +415,10 @@ void enclaves_report(struct enclaves *enclaves)
 
 	if (sgxtop)
 		mvprintw(line++, 0, "%*s %10s %11s %11s %11s %11s %10s", pid_width,
-			 "PID", "ID", "Size", "EADDs", "Resident", "VA_Page", "Command");
+			 "PID", "EID", "Size", "EADDs", "Resident", "VA_Page", "Command");
 	else
 		printf("%*s %10s %11s %11s %11s %11s %10s\n", pid_width,
-		       "PID", "ID", "Size", "EADDs", "Resident", "VA_Page","Command");
+		       "PID", "EID", "Size", "EADDs", "Resident", "VA_Page","Command");
 	LIST_FOREACH(e, &enclaves->state_list[enclaves->state],
 		     state_entry[enclaves->state]) {
 		assert(count < enclaves->count);
