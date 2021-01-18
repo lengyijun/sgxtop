@@ -170,13 +170,13 @@ void stats_report(struct stats *old, struct stats *new)
 		 (new->enclave_pages - new->free_pages) * 4,
 		 new->enclave_pages * 4);
 	if (sgxtop)
-		mvprintw(2, 0, "EPC mem: %11uK free: %11uK used: %11uK VA: %11uK",
+		mvprintw(2, 0, "EPC mem: %11uK total,%11uK free,%11uK used,%11uK VA",
 			 new->enclave_pages * 4,
 			 new->free_pages * 4,
 			 (new->enclave_pages - new->free_pages) * 4,
 			 new->va_pages * 4);
 	else
-		printf("EPC mem: %11uK free: %11uK used: %11uK VA: %11uK\n\n",
+		printf("EPC mem: %11uK total,%11uK free,%11uK used,%11uK VA\n\n",
 		       new->enclave_pages * 4, new->free_pages * 4,
 		       (new->enclave_pages - new->free_pages) * 4,
 		       new->va_pages * 4);
@@ -198,7 +198,7 @@ void stats_report(struct stats *old, struct stats *new)
 	}
 
 	mvprintw(1, 0,
-		 "EPC paging per second,  in:  %10luK out:   %10luK",
+		 "EPC paging per second:    %10luK in, %10luK out",
 		 pageins, pageouts);
 	refresh();
 }
