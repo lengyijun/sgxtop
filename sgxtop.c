@@ -26,7 +26,6 @@
 struct stats {
 	unsigned int enclaves_created;
 	unsigned int enclaves_released;
-	unsigned long pages_added;
 	unsigned long pageins;
 	unsigned long pageouts;
 	unsigned int enclave_pages;
@@ -128,13 +127,13 @@ int stats_read(struct stats *stats)
 		return -1;
 	}
 
-	int r = fscanf(fp, "%u %u %lu %lu %lu %u %u %u\n",
+	int r = fscanf(fp, "%u %u %lu %lu %u %u %u\n",
 		       &stats->enclaves_created, &stats->enclaves_released,
-		       &stats->pages_added, &stats->pageins, &stats->pageouts,
+		       &stats->pageins, &stats->pageouts,
 		       &stats->enclave_pages, &stats->va_pages,
 		       &stats->free_pages);
 	fclose(fp);
-	if (r != 8) {
+	if (r != 7) {
 		fprintf(stderr, "expect to read %d entries from %s, got %d\n",
 			8, SGX_STATS, r);
 		return -1;
