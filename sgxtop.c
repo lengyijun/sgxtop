@@ -225,13 +225,15 @@ char *pid_read_command(pid_t pid)
 
 int enclave_read(FILE *fp, struct enclave *enclave)
 {
-	int r = fscanf(fp, "%d %u %lu %lu %lu %lu",
+	int enclave_state;
+	int r = fscanf(fp, "%d %u %lu %lu %lu %lu %d",
 		       &enclave->pid, &enclave->id,
 		       &enclave->size, &enclave->eadd_cnt,
 		       &enclave->resident,
-		       &enclave->va_pages_cnt
+		       &enclave->va_pages_cnt,
+               &enclave_state
            );
-	if (r != 6)
+	if (r != 7)
 		return -1;
 
 	return 0;
